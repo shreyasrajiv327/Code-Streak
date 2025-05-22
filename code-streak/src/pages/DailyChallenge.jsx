@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
 import useWindowSize from '../hooks/useWindowSize';
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 function DailyChallenge({ user, onLogout }) {
   const [dailyProblem, setDailyProblem] = useState(null);
@@ -16,22 +17,21 @@ function DailyChallenge({ user, onLogout }) {
 
     const fetchDailyProblem = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/daily-challenge', {
+        const res = await axios.get(`${backendUrl}/api/daily-challenge`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setDailyProblem(res.data);
         setLoading(false);
 
-        // Check if the user has already solved today's problem
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const streakRes = await axios.get('http://localhost:5001/api/streaks', {
+        const streakRes = await axios.get(`${backendUrl}/api/streaks`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         const todayStreak = streakRes.data.find(
           (streak) => new Date(streak.date).toDateString() === today.toDateString()
         );
-        if (todayStreak && todayStreak.solved) {
+        if (todayStreak?.solved) {
           setSolved(true);
         }
       } catch (err) {
@@ -47,7 +47,7 @@ function DailyChallenge({ user, onLogout }) {
   const handleMarkAsSolved = async () => {
     try {
       await axios.post(
-        'http://localhost:5001/api/streaks/solve',
+        `${backendUrl}/api/streaks/solve`,
         {},
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -60,7 +60,28 @@ function DailyChallenge({ user, onLogout }) {
     }
   };
 
-  if (!user) return <p>Please log in to view the daily challenge.</p>;
+  if (!user) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          padding: '2rem',
+          background: theme === 'light'
+            ? 'linear-gradient(to bottom right, #f9f9f9, #eaeaea)'
+            : 'linear-gradient(to bottom right, #1a1a1a, #121212)',
+          color: theme === 'light' ? '#333' : '#eee',
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          fontSize: '1.25rem',
+          fontWeight: '500',
+        }}
+      >
+        Please log in to view the daily challenge.
+      </div>
+    );
+  }
 
   return (
     <div
@@ -84,7 +105,6 @@ function DailyChallenge({ user, onLogout }) {
         >
           Daily Challenge
         </h1>
-        {/* Logout button removed from here */}
       </div>
 
       {loading && <p>Loading...</p>}
@@ -100,6 +120,7 @@ function DailyChallenge({ user, onLogout }) {
           {error}
         </p>
       )}
+
       {dailyProblem && (
         <div
           style={{
@@ -119,43 +140,47 @@ function DailyChallenge({ user, onLogout }) {
           >
             {dailyProblem.problemId.title}
           </h2>
-          <a
-            href={dailyProblem.problemId.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: theme === 'light' ? '#007aff' : '#66b0ff',
-              textDecoration: 'none',
-              fontWeight: 500,
-            }}
-          >
-            View Problem
-          </a>
-          <p
-            style={{
-              margin: '1rem 0',
-              fontSize: width < 768 ? '0.9rem' : '1rem',
-              color: theme === 'light' ? '#666' : '#ccc',
-            }}
-          >
-            <strong>Difficulty:</strong> {dailyProblem.problemId.difficulty || 'Medium'}
-          </p>
-          <button
-            onClick={handleMarkAsSolved}
-            disabled={solved}
-            style={{
-              backgroundColor: solved ? '#ccc' : theme === 'light' ? '#007aff' : '#444',
-              color: '#fff',
-              border: 'none',
-              padding: width < 768 ? '0.5rem 1rem' : '0.6rem 1.2rem',
-              borderRadius: '8px',
-              cursor: solved ? 'not-allowed' : 'pointer',
-              fontWeight: 600,
-              transition: 'background-color 0.3s ease',
-            }}
-          >
-            {solved ? 'Solved!' : 'Mark as Solved'}
-          </button>
+         <div
+  style={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '1.5rem', // spacing between link and button
+    marginTop: '1rem',
+  }}
+>
+  <a
+    href={dailyProblem.problemId.link}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      color: theme === 'light' ? '#007aff' : '#66b0ff',
+      textDecoration: 'none',
+      fontWeight: 500,
+      fontSize: width < 768 ? '1rem' : '1.1rem',
+    }}
+  >
+    View Problem
+  </a>
+
+  <button
+    onClick={handleMarkAsSolved}
+    disabled={solved}
+    style={{
+      backgroundColor: solved ? '#ccc' : theme === 'light' ? '#007aff' : '#444',
+      color: '#fff',
+      border: 'none',
+      padding: width < 768 ? '0.5rem 1rem' : '0.6rem 1.2rem',
+      borderRadius: '8px',
+      cursor: solved ? 'not-allowed' : 'pointer',
+      fontWeight: 600,
+      transition: 'background-color 0.3s ease',
+      minWidth: '140px',
+    }}
+  >
+    {solved ? 'Solved!' : 'Mark as Solved'}
+  </button>
+</div>
         </div>
       )}
     </div>
@@ -163,3 +188,4 @@ function DailyChallenge({ user, onLogout }) {
 }
 
 export default DailyChallenge;
+

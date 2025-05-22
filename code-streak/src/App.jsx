@@ -7,6 +7,7 @@ import Problems from './pages/Problems.jsx';
 import DailyChallenge from './pages/DailyChallenge.jsx';
 import About from './pages/About.jsx';
 import Bookmark from './pages/Bookmarks.jsx'
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,7 +29,7 @@ function App() {
         const decoded = jwtDecode(token);
         setUser({ id: decoded.id });
         axios
-          .get('http://localhost:5001/auth/user', {
+          .get(`${backendUrl}/auth/user`, {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((res) => {
@@ -51,7 +52,7 @@ function App() {
         const decoded = jwtDecode(token);
         setUser({ id: decoded.id });
         axios
-          .get('http://localhost:5001/auth/user', {
+          .get(`${backendUrl}/auth/user`, {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((res) => setUser(res.data.user))
@@ -69,7 +70,7 @@ function App() {
   }, [location, navigate]);
 
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5001/auth/google';
+    window.location.href = `${backendUrl}/auth/google`;
   };
 
   const handleLogout = () => {

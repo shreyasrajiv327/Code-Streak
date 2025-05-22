@@ -5,7 +5,7 @@ import ProblemCard from '../components/ProblemCard'; // Still in components/
 import NotesModal from '../components/NotesModal'; // Still in components/
 import useWindowSize from '../hooks/useWindowSize'; // Path is correct
 import { useTheme } from '../context/ThemeContext'; // Path should be correct now
-
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 // Rest of the Problems.jsx code...
 
 function Problems({ user }) {
@@ -38,7 +38,7 @@ function Problems({ user }) {
         if (!token) {
           throw new Error('No token found');
         }
-        const res = await axios.get('http://localhost:5001/api/problems', {
+        const res = await axios.get(`${backendUrl}/api/problems`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Fetched problems:', JSON.stringify(res.data, null, 2));
@@ -66,7 +66,7 @@ function Problems({ user }) {
         link,
         tags: tags.split(',').map((tag) => tag.trim()).filter((tag) => tag),
       };
-      const res = await axios.post('http://localhost:5001/api/problems', newProblem, {
+      const res = await axios.post(`${backendUrl}/api/problems`, newProblem, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProblems([...problems, res.data]);
@@ -84,7 +84,7 @@ function Problems({ user }) {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5001/api/problems/${id}`, {
+      await axios.delete(`${backendUrl}/api/problems/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const updatedProblems = problems.filter((problem) => problem._id !== id);
@@ -109,7 +109,7 @@ function Problems({ user }) {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.put(
-        `http://localhost:5001/api/problems/${id}`,
+        `${backendUrl}/api/problems/${id}`,
         { notes },
         { headers: { Authorization: `Bearer ${token}` } }
       );

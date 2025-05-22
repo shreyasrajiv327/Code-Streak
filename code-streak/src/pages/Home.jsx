@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 function Home({ user }) {
   const [streaks, setStreaks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,7 @@ function Home({ user }) {
     const fetchStreaks = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('http://localhost:5001/api/streaks', {
+        const res = await axios.get(`${backendUrl}/api/streaks`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setStreaks(res.data);
@@ -128,7 +128,7 @@ function Home({ user }) {
             Track coding problems, add notes, and build streaks with daily challenges. Login to get started!
           </p>
           <button
-            onClick={() => (window.location.href = 'http://localhost:5001/auth/google')}
+            onClick={() => (window.location.href = `${backendUrl}/auth/google`)}
             style={{
               backgroundColor: '#007aff',
               color: 'white',

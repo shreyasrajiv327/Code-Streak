@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 function Bookmarks({ user }) {
   const [bookmarks, setBookmarks] = useState([]);
   const [title, setTitle] = useState('');
@@ -16,7 +16,7 @@ function Bookmarks({ user }) {
     const fetchBookmarks = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('http://localhost:5001/api/bookmarks', {
+        const res = await axios.get(`${backendUrl}/api/bookmarks`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setBookmarks(res.data);
@@ -40,7 +40,7 @@ function Bookmarks({ user }) {
     setError(null);
     try {
       const res = await axios.post(
-        'http://localhost:5001/api/bookmarks',
+        `${backendUrl}/api/bookmarks`,
         { title, url },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -56,7 +56,7 @@ function Bookmarks({ user }) {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/bookmarks/${id}`, {
+      await axios.delete(`${backendUrl}/api/bookmarks/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setBookmarks(bookmarks.filter((b) => b._id !== id));

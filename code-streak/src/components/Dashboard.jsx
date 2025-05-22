@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../context/ThemeContext';
 import useWindowSize from '../hooks/useWindowSize';
-
+const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 function Dashboard({ user, onLogout }) {
   const [stats, setStats] = useState({
     totalProblems: 0,
@@ -21,7 +21,7 @@ function Dashboard({ user, onLogout }) {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5001/api/problems', {
+        const res = await axios.get(`${backendUrl}/api/problems`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const problems = res.data || [];
@@ -49,7 +49,7 @@ function Dashboard({ user, onLogout }) {
     const fetchStreakData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5001/api/streaks', {
+        const res = await axios.get(`${backendUrl}/api/streaks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStreakData(res.data || []);
@@ -122,191 +122,151 @@ function Dashboard({ user, onLogout }) {
 
   const calendarDays = generateCalendar();
 
-  return (
-    <div
-      style={{
-        maxWidth: width < 768 ? '100%' : '1200px',
-        margin: width < 768 ? '2rem auto' : '4rem auto',
-        padding: width < 768 ? '0 1rem' : '0 2rem',
-        textAlign: 'center',
-        backgroundColor: theme === 'light' ? '#f5f5f5' : '#1a1a1a',
-        minHeight: '100vh',
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1
-          style={{
-            fontSize: width < 768 ? '2rem' : '2.8rem',
-            fontWeight: 800,
-            color: theme === 'light' ? '#1a1a1a' : '#fff',
-            marginBottom: width < 768 ? '0.8rem' : '1.2rem',
-          }}
-        >
-          Dashboard
-        </h1>
-        <button
-          onClick={onLogout}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '8px',
-            border: 'none',
-            backgroundColor: theme === 'light' ? '#ff3b30' : '#666',
-            color: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          Logout
-        </button>
-      </div>
-
-      {/* Streak Stats */}
-      <div
+ return (
+  <div
+    style={{
+      maxWidth: '1000px',
+      margin: '4rem auto',
+      padding: '2rem',
+      backgroundColor: theme === 'light' ? '#fafafa' : '#111',
+      fontFamily: `'Inter', 'Segoe UI', sans-serif`,
+      transition: 'all 0.3s ease-in-out',
+      color: theme === 'light' ? '#1a1a1a' : '#f0f0f0',
+    }}
+  >
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '2rem',
+    }}>
+      <h1 style={{
+        fontSize: '2.5rem',
+        fontWeight: '700',
+        margin: 0,
+        color: theme === 'light' ? '#111' : '#f5f5f5',
+      }}>
+        Dashboard
+      </h1>
+      <button
+        onClick={onLogout}
         style={{
-          backgroundColor: theme === 'light' ? '#fff' : '#333',
-          padding: width < 768 ? '1rem' : '2rem',
-          borderRadius: '16px',
-          border: `1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)'}`,
-          marginBottom: '2rem',
+          background: theme === 'light' ? '#e74c3c' : '#444',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '10px',
+          padding: '0.5rem 1rem',
+          fontWeight: 600,
+          cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         }}
       >
-        <h2
-          style={{
-            fontSize: width < 768 ? '1.5rem' : '2rem',
-            fontWeight: 600,
-            color: theme === 'light' ? '#1a1a1a' : '#fff',
-            marginBottom: '1rem',
-          }}
-        >
-          Your Streak
-        </h2>
-        <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '1rem' }}>
-          <div>
-            <p
-              style={{
-                fontSize: width < 768 ? '1rem' : '1.2rem',
-                fontWeight: 500,
-                color: theme === 'light' ? '#666' : '#ccc',
-              }}
-            >
-              Current Streak
-            </p>
-            <p
-              style={{
-                fontSize: width < 768 ? '1.5rem' : '2rem',
-                fontWeight: 700,
-                color: theme === 'light' ? '#007aff' : '#66b0ff',
-              }}
-            >
-              {currentStreak} {currentStreak === 1 ? 'day' : 'days'}
-            </p>
-          </div>
-          <div>
-            <p
-              style={{
-                fontSize: width < 768 ? '1rem' : '1.2rem',
-                fontWeight: 500,
-                color: theme === 'light' ? '#666' : '#ccc',
-              }}
-            >
-              Longest Streak
-            </p>
-            <p
-              style={{
-                fontSize: width < 768 ? '1.5rem' : '2rem',
-                fontWeight: 700,
-                color: theme === 'light' ? '#007aff' : '#66b0ff',
-              }}
-            >
-              {longestStreak} {longestStreak === 1 ? 'day' : 'days'}
-            </p>
-          </div>
-        </div>
+        Logout
+      </button>
+    </div>
 
-        {/* Streak Calendar */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${width < 768 ? 20 : 30}, 12px)`,
-            gap: '4px',
-            justifyContent: 'center',
-            marginTop: '1rem',
-          }}
-        >
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              title={day.date.toDateString()}
-              style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: day.solved
-                  ? theme === 'light'
-                    ? '#34c759'
-                    : '#66ff99'
-                  : theme === 'light'
-                  ? '#ebedf0'
-                  : '#444',
-                borderRadius: '3px',
-              }}
-            />
-          ))}
+    {/* Your Streak Section */}
+    <div style={{
+      background: theme === 'light' ? '#ffffff' : '#1f1f1f',
+      borderRadius: '16px',
+      padding: '2rem',
+      marginBottom: '2rem',
+      boxShadow: theme === 'light'
+        ? '0 1px 6px rgba(0,0,0,0.05)'
+        : '0 1px 6px rgba(255,255,255,0.05)',
+    }}>
+      <h2 style={{
+        fontSize: '1.8rem',
+        fontWeight: 600,
+        marginBottom: '1.5rem',
+      }}>
+        Your Streak
+      </h2>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '4rem',
+        marginBottom: '1rem',
+      }}>
+        <div>
+          <p style={{ margin: 0, color: '#888' }}>Current Streak</p>
+          <p style={{
+            fontSize: '1.6rem',
+            fontWeight: 600,
+            color: '#34c759',
+            margin: 0,
+          }}>{currentStreak} day{currentStreak !== 1 && 's'}</p>
+        </div>
+        <div>
+          <p style={{ margin: 0, color: '#888' }}>Longest Streak</p>
+          <p style={{
+            fontSize: '1.6rem',
+            fontWeight: 600,
+            color: '#007aff',
+            margin: 0,
+          }}>{longestStreak} day{longestStreak !== 1 && 's'}</p>
         </div>
       </div>
 
-      {/* Existing Stats */}
       <div
         style={{
-          backgroundColor: theme === 'light' ? '#fff' : '#333',
-          padding: width < 768 ? '1rem' : '2rem',
-          borderRadius: '16px',
-          border: `1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.1)'}`,
+          display: 'grid',
+          gridTemplateColumns: `repeat(30, 12px)`,
+          gap: '5px',
+          justifyContent: 'center',
+          marginTop: '1.5rem',
         }}
       >
-        <h2
-          style={{
-            fontSize: width < 768 ? '1.5rem' : '2rem',
-            fontWeight: 600,
-            color: theme === 'light' ? '#1a1a1a' : '#fff',
-            marginBottom: '1rem',
-          }}
-        >
-          Problem Statistics
-        </h2>
-        <p
-          style={{
-            fontSize: width < 768 ? '1rem' : '1.2rem',
-            color: theme === 'light' ? '#666' : '#ccc',
-          }}
-        >
-          <strong>Total Problems Solved:</strong> {stats.totalProblems}
-        </p>
-        <p
-          style={{
-            fontSize: width < 768 ? '1rem' : '1.2rem',
-            color: theme === 'light' ? '#666' : '#ccc',
-          }}
-        >
-          <strong>Difficulty Breakdown:</strong>
-          <br />
-          Easy: {stats.difficultyBreakdown.Easy}, Medium: {stats.difficultyBreakdown.Medium}, Hard: {stats.difficultyBreakdown.Hard}
-        </p>
-        <p
-          style={{
-            fontSize: width < 768 ? '1rem' : '1.2rem',
-            color: theme === 'light' ? '#666' : '#ccc',
-          }}
-        >
-          <strong>Top Tags:</strong>
-          <br />
-          {Object.entries(stats.tagsBreakdown)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 5)
-            .map(([tag, count]) => `${tag}: ${count}`)
-            .join(', ') || 'None'}
-        </p>
+        {calendarDays.map((day, index) => (
+          <div
+            key={index}
+            title={day.date.toDateString()}
+            style={{
+              width: '12px',
+              height: '12px',
+              backgroundColor: day.solved
+                ? theme === 'light'
+                  ? '#34c759'
+                  : '#66ff99'
+                : theme === 'light'
+                ? '#e5e5e5'
+                : '#333',
+              borderRadius: '4px',
+              transition: 'background 0.3s ease',
+            }}
+          />
+        ))}
       </div>
     </div>
-  );
+
+    {/* Stats Section */}
+    <div style={{
+      background: theme === 'light' ? '#ffffff' : '#1f1f1f',
+      borderRadius: '16px',
+      padding: '2rem',
+      boxShadow: theme === 'light'
+        ? '0 1px 6px rgba(0,0,0,0.05)'
+        : '0 1px 6px rgba(255,255,255,0.05)',
+    }}>
+      <h2 style={{ fontSize: '1.8rem', fontWeight: 600, marginBottom: '1rem' }}>Problem Stats</h2>
+      <p style={{ color: '#888' }}>
+        <strong>Total Solved:</strong> {stats.totalProblems}
+      </p>
+      <p style={{ color: '#888' }}>
+        <strong>Difficulty:</strong> Easy ({stats.difficultyBreakdown.Easy}), Medium ({stats.difficultyBreakdown.Medium}), Hard ({stats.difficultyBreakdown.Hard})
+      </p>
+      <p style={{ color: '#888' }}>
+        <strong>Top Tags:</strong>{' '}
+        {Object.entries(stats.tagsBreakdown)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([tag, count]) => `${tag}: ${count}`)
+          .join(', ') || 'None'}
+      </p>
+    </div>
+  </div>
+);
+
 }
 
 export default Dashboard;
