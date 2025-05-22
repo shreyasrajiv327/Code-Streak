@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const Streak = require('../models/Streaks');
+const Streak = require('../models/streaks');
 
 // Get user's streak data
 router.get('/', auth, async (req, res) => {

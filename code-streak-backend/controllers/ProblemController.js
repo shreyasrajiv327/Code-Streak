@@ -1,7 +1,7 @@
 // backend/controllers/ProblemController.js
-const Problem = require('../models/Problem');
-const { body, validationResult } = require('express-validator');
-const errorView = require('../views/error');
+const Problem = require("../models/problem");
+const { body, validationResult } = require("express-validator");
+const errorView = require("../views/error");
 
 exports.getProblems = async (req, res) => {
   try {
@@ -13,8 +13,8 @@ exports.getProblems = async (req, res) => {
 };
 
 exports.createProblem = [
-  body('title').notEmpty().withMessage('Title is required'),
-  body('link').isURL().withMessage('Valid URL is required'),
+  body("title").notEmpty().withMessage("Title is required"),
+  body("link").isURL().withMessage("Valid URL is required"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -27,7 +27,7 @@ exports.createProblem = [
         userId: req.user.id,
         title,
         link,
-        notes: notes || '',
+        notes: notes || "",
         tags: tags || [],
       });
       await problem.save();
@@ -39,8 +39,8 @@ exports.createProblem = [
 ];
 
 exports.updateProblem = [
-  body('title').optional().notEmpty().withMessage('Title cannot be empty'),
-  body('link').optional().isURL().withMessage('Valid URL is required'),
+  body("title").optional().notEmpty().withMessage("Title cannot be empty"),
+  body("link").optional().isURL().withMessage("Valid URL is required"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -56,7 +56,7 @@ exports.updateProblem = [
         { new: true }
       );
       if (!problem) {
-        return errorView.notFound(res, 'Problem');
+        return errorView.notFound(res, "Problem");
       }
       res.json(problem);
     } catch (err) {
@@ -68,11 +68,14 @@ exports.updateProblem = [
 exports.deleteProblem = async (req, res) => {
   try {
     const { id } = req.params;
-    const problem = await Problem.findOneAndDelete({ _id: id, userId: req.user.id });
+    const problem = await Problem.findOneAndDelete({
+      _id: id,
+      userId: req.user.id,
+    });
     if (!problem) {
-      return errorView.notFound(res, 'Problem');
+      return errorView.notFound(res, "Problem");
     }
-    res.json({ message: 'Problem deleted' });
+    res.json({ message: "Problem deleted" });
   } catch (err) {
     errorView.serverError(res);
   }

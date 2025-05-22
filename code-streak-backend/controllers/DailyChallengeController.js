@@ -62,21 +62,24 @@
 // };
 // controllers/dailyChallengeController.js
 
-const DailyChallenge = require('../models/DailyChallenge');
-const Problem = require('../models/Problem');
-const moment = require('moment');
+const DailyChallenge = require("../models/dailyChallenge");
+const Problem = require("../models/problem");
+const moment = require("moment");
 
 exports.getDailyChallenge = async (req, res) => {
   try {
     const userId = req.user._id;
-    const today = moment().startOf('day').toDate();
+    const today = moment().startOf("day").toDate();
 
-    let challenge = await DailyChallenge.findOne({ userId, date: today }).populate('problemId');
+    let challenge = await DailyChallenge.findOne({
+      userId,
+      date: today,
+    }).populate("problemId");
 
     if (!challenge) {
       const randomProblem = await Problem.aggregate([{ $sample: { size: 1 } }]);
       if (!randomProblem.length) {
-        return res.status(404).json({ error: 'No problems available' });
+        return res.status(404).json({ error: "No problems available" });
       }
 
       challenge = new DailyChallenge({
@@ -85,7 +88,7 @@ exports.getDailyChallenge = async (req, res) => {
         date: today,
       });
       await challenge.save();
-      await challenge.populate('problemId');
+      await challenge.populate("problemId");
     }
 
     // Return response in a shape your frontend expects
@@ -100,8 +103,8 @@ exports.getDailyChallenge = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('Error in getDailyChallenge:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error in getDailyChallenge:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -109,7 +112,7 @@ exports.getDailyChallenge = async (req, res) => {
 exports.createChallenge = async (req, res) => {
   try {
     const userId = req.user._id;
-    const today = moment().startOf('day').toDate();
+    const today = moment().startOf("day").toDate();
 
     const challenge = await DailyChallenge.findOneAndUpdate(
       { userId, date: today },
@@ -118,12 +121,12 @@ exports.createChallenge = async (req, res) => {
     );
 
     if (!challenge) {
-      return res.status(404).json({ error: 'Daily challenge not found' });
+      return res.status(404).json({ error: "Daily challenge not found" });
     }
 
-    res.json({ message: 'Challenge marked as solved!' });
+    res.json({ message: "Challenge marked as solved!" });
   } catch (err) {
-    console.error('Error in createChallenge:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error in createChallenge:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -1,7 +1,7 @@
 // backend/routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
-const AuthController = require('../controllers/AuthController');
+const AuthController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 
 router.get('/google', AuthController.googleAuth);

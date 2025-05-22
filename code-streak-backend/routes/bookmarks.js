@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const Bookmark = require('../models/Bookmark');
+const Bookmark = require('../models/bookmark');
 
 // Get all bookmarks for user
 router.get('/', auth, async (req, res) => {
