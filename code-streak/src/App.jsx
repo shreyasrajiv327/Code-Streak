@@ -7,7 +7,7 @@ import Problems from './pages/Problems.jsx';
 import DailyChallenge from './pages/DailyChallenge.jsx';
 import About from './pages/About.jsx';
 import Bookmark from './pages/Bookmarks.jsx'
-import AuthCallback from "./pages/AuthCallback"; // 👈 Import here
+import AuthCallback from "./pages/AuthCallBack.jsx"; // 👈 Import here
 const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 function App() {
