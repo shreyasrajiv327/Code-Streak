@@ -195,6 +195,7 @@ function App() {
         <Route path="/daily-challenge" element={<DailyChallenge user={user} />} />
         <Route path="/about" element={<About />} />
         <Route path="/bookmarks" element={<Bookmark user={user} />} />
+        <Route path="/auth/callback" element={<AuthCallback />} /> {/* 👈 Add this */}
         <Route path="*" element={<Home user={user} />} />
       </Routes>
     </div>
