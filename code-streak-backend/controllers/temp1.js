@@ -3,7 +3,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const errorView = require('../views/error');
-
+//hii
 exports.googleAuth = (req, res, next) => {
   passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
 };
