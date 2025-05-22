@@ -1,0 +1,19 @@
+# Node modules folder (dependencies)
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build output (if any)
+dist/
+build/
+/Users/shreyasr/Documents/Projects/Code-Streak/code-streak-backend/client_secret_220456599907-bn8sn49ucb2hqgvs1l2csb43kc8ptln3.apps.googleusercontent.com.json
