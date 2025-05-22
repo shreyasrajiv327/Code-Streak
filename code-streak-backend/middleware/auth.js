@@ -21,7 +21,7 @@
 // middleware/auth.js
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/user');
 
 module.exports = async (req, res, next) => {
   const token = req.header('Authorization')?.split(' ')[1];
