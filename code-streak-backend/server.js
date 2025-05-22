@@ -41,7 +41,7 @@ require('./config/passport');
 
 const authRoutes = require('./routes/authRoutes');
 const problemRoutes = require('./routes/problemRoutes');
-const dailyChallengeRoutes = require('./routes/dailyChallengeRoutes');
+const dailyChallengeRoutes = require('./routes/dailychallengeRoutes');
 const streakRoutes = require('./routes/streak');
 const bookmarkRoutes = require('./routes/bookmarks'); // Add this line
 
